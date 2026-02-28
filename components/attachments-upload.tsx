@@ -7,12 +7,16 @@ import toast from "react-hot-toast";
 
 interface AttachmentsUploadsProps {
   disabled?: boolean;
-  jobId: string;
+  jobId?: string;
+  value?: { url: string; name: string }[];
+  onChange?: (attachments: { url: string; name: string }[]) => void;
 }
 
 export const AttachmentsUploads = ({
   disabled,
   jobId,
+  value,
+  onChange,
 }: AttachmentsUploadsProps) => {
   const [isMounted, setIsMounted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -31,27 +35,67 @@ export const AttachmentsUploads = ({
     let hasSuccess = false;
 
     try {
-      for (const file of files) {
-        const formData = new FormData();
-        formData.append("file", file);
+      // If onChange is provided, use Cloudinary upload (controlled component)
+      if (onChange) {
+        const uploadedFiles: { url: string; name: string }[] = [];
 
-        const res = await fetch(`/api/jobs/${jobId}/attachments`, {
-          method: "POST",
-          body: formData,
-        });
+        for (const file of files) {
+          const formData = new FormData();
+          formData.append("file", file);
+          formData.append(
+            "upload_preset",
+            process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET!,
+          );
 
-        if (!res.ok) {
-          const message = await res.text();
-          toast.error(message || "Upload failed");
-          continue;
+          const res = await fetch(
+            `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/auto/upload`,
+            {
+              method: "POST",
+              body: formData,
+            },
+          );
+
+          const data = await res.json();
+
+          if (!res.ok) {
+            toast.error(data.error?.message || "Upload failed");
+            continue;
+          }
+
+          uploadedFiles.push({
+            url: data.secure_url,
+            name: file.name,
+          });
         }
 
-        hasSuccess = true;
-        toast.success("Uploaded successfully");
-      }
+        if (uploadedFiles.length > 0) {
+          onChange([...(value || []), ...uploadedFiles]);
+          toast.success("Files uploaded successfully");
+        }
+      } else if (jobId) {
+        // Use API upload (uncontrolled component)
+        for (const file of files) {
+          const formData = new FormData();
+          formData.append("file", file);
 
-      if (hasSuccess) {
-        router.refresh();
+          const res = await fetch(`/api/jobs/${jobId}/attachments`, {
+            method: "POST",
+            body: formData,
+          });
+
+          if (!res.ok) {
+            const message = await res.text();
+            toast.error(message || "Upload failed");
+            continue;
+          }
+
+          hasSuccess = true;
+          toast.success("Uploaded successfully");
+        }
+
+        if (hasSuccess) {
+          router.refresh();
+        }
       }
     } catch (err) {
       toast.error("Upload failed");

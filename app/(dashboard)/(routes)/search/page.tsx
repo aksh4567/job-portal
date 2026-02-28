@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 import CategoriesList from "./_components/categories-list";
 import { PageContent } from "./_components/page-content";
+import { AppliedFilters } from "./_components/applied-filters";
 
 interface SearchProps {
   searchParams: Promise<{
@@ -41,6 +42,7 @@ const SearchPage = async ({ searchParams }: SearchProps) => {
         <CategoriesList categories={categories} />
 
         {/* applied filters */}
+        <AppliedFilters categories={categories} />
 
         {/* page content */}
         <PageContent jobs={jobs} userId={userId} />

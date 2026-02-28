@@ -6,17 +6,11 @@ import { Card, CardDescription } from "@/components/ui/card";
 import { formatDistanceToNow } from "date-fns";
 import Box from "@/components/box";
 import {
-  BadgeDollarSign,
-  BadgeIndianRupeeIcon,
+  Bookmark,
   BookmarkCheck,
   BriefcaseBusiness,
-  Coins,
-  CoinsIcon,
-  Currency,
-  IndianRupee,
   Layers,
   Loader2,
-  LucideCurrency,
   Network,
   ReceiptIndianRupeeIcon,
 } from "lucide-react";
@@ -26,6 +20,10 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { truncate } from "lodash";
+
+import toast from "react-hot-toast";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 interface JobCardItemProps {
   job: Job;
@@ -39,7 +37,58 @@ const JobCardItem = ({ job, userId }: JobCardItemProps) => {
 
   const company = typeJob.company;
   const [isBookmarkLoading, setIsBookmarkLoading] = useState(false);
-  const SavedUsersIcon = BookmarkCheck;
+  const isSavedByUser = userId && job.savedUsers?.includes(userId);
+  const SavedUsersIcon = isSavedByUser ? BookmarkCheck : Bookmark;
+
+  const router = useRouter();
+
+  const experienceData = [
+    {
+      value: "fresher",
+      label: "Fresher",
+    },
+    {
+      value: "0-1",
+      label: "0-1 years",
+    },
+    {
+      value: "1-3",
+      label: "1-3 years",
+    },
+    {
+      value: "3-5",
+      label: "3-5 years",
+    },
+    {
+      value: "5+",
+      label: "5+ years",
+    },
+  ];
+
+  const onClickSaveJob = async () => {
+    try {
+      setIsBookmarkLoading(true);
+      if (isSavedByUser) {
+        await axios.patch(`/api/jobs/${job.id}/removeJobFromCollection`);
+        toast.success("Job Removed");
+      } else {
+        await axios.patch(`/api/jobs/${job.id}/saveJobToCollection`);
+        toast.success("Job Saved");
+      }
+      router.refresh();
+    } catch (error) {
+      toast.error("Something Went Wrong");
+      console.log(`Error : ${(error as Error)?.message}`);
+    } finally {
+      setIsBookmarkLoading(false);
+    }
+  };
+
+  const getExperienceLabel = (value: string) => {
+    const experience = experienceData.find((exp) => exp.value === value);
+
+    return experience ? experience.label : "";
+  };
 
   return (
     <motion.div layout>
@@ -57,7 +106,16 @@ const JobCardItem = ({ job, userId }: JobCardItemProps) => {
               {isBookmarkLoading ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
               ) : (
-                <SavedUsersIcon className={cn("w-4 h-4")} />
+                <div onClick={onClickSaveJob}>
+                  <SavedUsersIcon
+                    className={cn(
+                      "w-4 h-4",
+                      isSavedByUser
+                        ? "text-emerald-500"
+                        : "text-muted-foreground",
+                    )}
+                  />
+                </div>
               )}
             </Button>
           </Box>
@@ -90,7 +148,7 @@ const JobCardItem = ({ job, userId }: JobCardItemProps) => {
           </Box>
 
           {/* job details */}
-          <Box className="flex-wrap justify-start gap-2">
+          <Box>
             {job.shiftTiming && (
               <div className="text-xs text-muted-foreground flex items-center">
                 <BriefcaseBusiness className="w-3 h-3 mr-1" />
@@ -115,7 +173,7 @@ const JobCardItem = ({ job, userId }: JobCardItemProps) => {
             {job.yearsOfExperience && (
               <div className="text-xs text-muted-foreground flex items-center">
                 <Network className="w-3 h-3 mr-1" />
-                {job.yearsOfExperience}
+                {getExperienceLabel(job.yearsOfExperience)}
               </div>
             )}
           </Box>
@@ -153,10 +211,11 @@ const JobCardItem = ({ job, userId }: JobCardItemProps) => {
             </Link>
 
             <Button
-              className="w-[50%] text-white hover:bg-purple-800 bg-purple-800/90"
+              className="w-[50%] text-white hover:bg-purple-800 bg-purple-800/90 hover:text-white"
               variant="outline"
+              onClick={onClickSaveJob}
             >
-              Save
+              {isSavedByUser ? "Saved" : "Saved For Later"}
             </Button>
           </Box>
         </div>

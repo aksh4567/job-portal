@@ -41,6 +41,7 @@ model Job {
 
   @@index([categoryId])
   @@index([companyId])
+  @@fulltext([title])
 }
 
 model Attachment {
@@ -84,4 +85,31 @@ model Category {
   jobs      Job[]
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
+}
+
+model UserProfile {
+  userId         String       @id @map("_id")
+  fullName       String?
+  email          String?
+  contact        String?
+  appliedJobs    AppliedJob[]
+  resumes        Resumes[]
+  activeResumeId String?
+}
+
+type AppliedJob {
+  jobId     String
+  appliedAt DateTime @default(now())
+}
+
+model Resumes {
+  id            String      @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  url           String
+  userProfileId String
+  userProfile   UserProfile @relation(fields: [userProfileId], references: [userId], onDelete: Cascade)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@index([userProfileId], name: "idx_userProfile")
 }
