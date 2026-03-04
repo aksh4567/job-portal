@@ -31,7 +31,7 @@
     "handlebars": "^4.7.8",
     "lodash": "^4.17.23",
     "lucide-react": "^0.545.0",
-    "next": "15.5.4",
+    "next": "15.5.9",
     "nodemailer": "^8.0.1",
     "prisma": "^6.18.0",
     "query-string": "^9.3.1",
