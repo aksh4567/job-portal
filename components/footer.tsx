@@ -18,7 +18,7 @@ const menuOne = [
 
 export const Footer = () => {
   return (
-    <Box className="h-73 p-4 items-start flex-col bg-purple-50 rounded-xl">
+    <Box className="h-73 p-4 items-start flex-col bg-purple-50 rounded-xl shadow-lg">
       <div className="w-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-6">
         {/* first section */}
         <Box className="flex-col items-start gap-6">
@@ -69,23 +69,25 @@ export const Footer = () => {
             </Link>
           ))}
         </Box>
-
-        <Card className="p-6 col-span-2 bg-pink-50">
-          <CardTitle className="text-base">Apply on the go</CardTitle>
-          <CardDescription>
-            Get real-time job updates on our App
-          </CardDescription>
-          <Link href={"#"}>
-            <div className="w-full relative overflow-hidden h-16">
-              <Image
-                src={"/img/play-apple-store.png"}
-                fill
-                className="w-full h-full object-contain"
-                alt="Play Store & Apple Store"
-              />
-            </div>
-          </Link>
+        <Card className="col-span-2 relative min-h-[220px] overflow-hidden">
+          <Image
+            src="/home-cover-img.png"
+            fill
+            className="object-cover"
+            alt="footer-img"
+          />
         </Card>
+
+        {/* <Card className="col-span-2 bg-pink-50">
+          <div className="w-full relative overflow-hidden h-full">
+            <Image
+              src={"/home-cover-img.png"}
+              fill
+              className="w-full h-full object-cover"
+              alt="footer-img"
+            />
+          </div>
+        </Card> */}
       </div>
 
       <Separator className="mt-3" />

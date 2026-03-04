@@ -39,7 +39,7 @@ const DashboardHomePage = async () => {
 
       <Box className="relative overflow-hidden h-70 justify-center rounded-lg mt-12">
         <Image
-          src="/home-cover.png"
+          src="/home-img.png"
           alt="Home Banner"
           fill
           className="object-cover w-full h-full"
