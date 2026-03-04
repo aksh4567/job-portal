@@ -22,11 +22,7 @@ import {
   ShieldX,
   X,
 } from "lucide-react";
-import {
-  FileText,
-  FileImage,
-  FileSpreadsheet,
-} from "lucide-react";
+import { FileText, FileImage, FileSpreadsheet } from "lucide-react";
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
