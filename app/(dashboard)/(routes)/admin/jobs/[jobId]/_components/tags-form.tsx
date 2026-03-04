@@ -1,7 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
 
-import getGenerativeAIResponse from "@/scripts/aistudio";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Job } from "@prisma/client";
 import axios from "axios";
@@ -34,15 +33,15 @@ export const TagForm = ({ initialData, jobId }: TagFormProps) => {
     defaultValues: initialData,
   });
 
-  const { isSubmitting, isValid } = form.formState;
+  const { isSubmitting } = form.formState;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const response = await axios.patch(`/api/jobs/${jobId}`, values);
+      await axios.patch(`/api/jobs/${jobId}`, values);
       toast.success("Job Updated");
       toggleEditing();
       router.refresh();
-    } catch (error) {
+    } catch {
       toast.error("Something went wrong");
     }
     //console.log(values);
@@ -79,35 +78,39 @@ export const TagForm = ({ initialData, jobId }: TagFormProps) => {
 No introductory text, no markdown code blocks, just the array.
 Example format: ["keyword1", "keyword2", "keyword3"]`;
 
-      await getGenerativeAIResponse(customPrompt).then((data) => {
-        // 1. Clean the string of any Markdown backticks (```json ... ```)
-        const cleanedText = data.replace(/```json|```/g, "").trim();
-
-        try {
-          // 2. Convert the String into a real JavaScript Array
-          const parsedArray = JSON.parse(cleanedText);
-
-          // 3. Now Array.isArray will return true
-          if (Array.isArray(parsedArray)) {
-            console.log("in client side :", parsedArray);
-            setJobTags((prevTags) => [...prevTags, ...parsedArray]);
-            // console.log("inside is array checker");
-            // console.log(parsedArray); // This will now log your 10 keywords
-
-            // If you need to save these to your state:
-            // setKeywords(parsedArray);
-          } else {
-            console.error("AI returned JSON, but it was not an array.");
-          }
-        } catch (parseError) {
-          console.error(
-            "Could not parse AI response as JSON. AI returned:",
-            cleanedText,
-          );
-        }
-
-        setIsPrompting(false);
+      const response = await axios.post("/api/generate-ai-content", {
+        prompt: customPrompt,
       });
+
+      const data = response.data.data;
+
+      // 1. Clean the string of any Markdown backticks (```json ... ```)
+      const cleanedText = data.replace(/```json|```/g, "").trim();
+
+      try {
+        // 2. Convert the String into a real JavaScript Array
+        const parsedArray = JSON.parse(cleanedText);
+
+        // 3. Now Array.isArray will return true
+        if (Array.isArray(parsedArray)) {
+          console.log("in client side :", parsedArray);
+          setJobTags((prevTags) => [...prevTags, ...parsedArray]);
+          // console.log("inside is array checker");
+          // console.log(parsedArray); // This will now log your 10 keywords
+
+          // If you need to save these to your state:
+          // setKeywords(parsedArray);
+        } else {
+          console.error("AI returned JSON, but it was not an array.");
+        }
+      } catch {
+        console.error(
+          "Could not parse AI response as JSON. AI returned:",
+          cleanedText,
+        );
+      }
+
+      setIsPrompting(false);
     } catch (error) {
       console.log(error);
       toast.error("Something went wrong");

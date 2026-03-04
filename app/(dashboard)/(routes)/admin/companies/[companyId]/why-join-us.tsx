@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/form";
 
 import { cn } from "@/lib/utils";
-import getGenerativeAIResponse from "@/scripts/aistudio";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Company } from "@prisma/client";
 import axios from "axios";
@@ -56,12 +55,12 @@ export const WhyJoinUsForm = ({
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const response = await axios.patch(`/api/companies/${companyId}`, values);
+      await axios.patch(`/api/companies/${companyId}`, values);
       toast.success("Company Updated");
       // setLocalWhyJoinUsForm(values.whyJoinUs);
       toggleEditing();
       router.refresh();
-    } catch (error) {
+    } catch {
       toast.error("Something went wrong");
     }
     console.log(values);
@@ -73,32 +72,33 @@ export const WhyJoinUsForm = ({
     try {
       setIsPrompting(true);
 
-      const customPrompt = `Create a compelling "Why join us" content piece for ${rollName}. Highlight the unique opportunities, benefits, and experiences that ${rollName} offers to its users. Emphasize the platform's value proposition, such as access to a vast music library, personalized recommendations, exclusive content, community features, and career opportunities for musicians and creators. Tailor the content to attract potential users and illustrate why ${rollName} stands out among other music streaming platforms.
+      const customPrompt = `Create a compelling "Why join us" content piece for ${rollName}. Highlight the unique opportunities, benefits, and experiences that ${rollName} offers to its employees. Emphasize the  ${rollName}'s value proposition, work culture, work ethics and vision and career opportunities. Tailor the content to attract potential employees and illustrate why ${rollName} stands out among other competitors.
       Constraint Guidelines:
 - DO NOT include introductory text like "Sure, here is..." or "Okay, I've drafted...".
 - DO NOT use horizontal rules (---) or excessive symbols like ###.
 - Return ONLY the plain text content of the company whyJoinUs.
 - Use simple, clean headers without Markdown symbols.
       `;
-      await getGenerativeAIResponse(customPrompt).then((data) => {
-        // data = data.replace(/^["']|["']$/g, "");
-        // let cleanedText = data.replace(/\*\*/g, "");
-
-        // 1. Remove quotes from start/end
-        let cleanedText = data.replace(/^["']|["']$/g, "");
-
-        // 2. Remove Markdown bold (**) and headers (#)
-        cleanedText = cleanedText.replace(/[*#]/g, "");
-
-        // 3. Remove horizontal rules (---)
-        cleanedText = cleanedText.replace(/^-+$/gm, "");
-
-        // 4. Trim whitespace from start/end to remove extra lines
-        cleanedText = cleanedText.trim();
-
-        setAiValue(cleanedText);
-        setIsPrompting(false);
+      const response = await axios.post("/api/generate-ai-content", {
+        prompt: customPrompt,
       });
+
+      const data = response.data.data;
+
+      // 1. Remove quotes from start/end
+      let cleanedText = data.replace(/^["']|["']$/g, "");
+
+      // 2. Remove Markdown bold (**) and headers (#)
+      cleanedText = cleanedText.replace(/[*#]/g, "");
+
+      // 3. Remove horizontal rules (---)
+      cleanedText = cleanedText.replace(/^-+$/gm, "");
+
+      // 4. Trim whitespace from start/end to remove extra lines
+      cleanedText = cleanedText.trim();
+
+      setAiValue(cleanedText);
+      setIsPrompting(false);
     } catch (error) {
       console.log(error);
       toast.error("Something went wrong");

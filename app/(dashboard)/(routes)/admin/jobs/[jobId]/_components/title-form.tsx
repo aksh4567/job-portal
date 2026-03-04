@@ -41,11 +41,11 @@ export const TitleForm = ({ initialData, jobId }: TitleFormProps) => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const response = await axios.patch(`/api/jobs/${jobId}`, values);
+      await axios.patch(`/api/jobs/${jobId}`, values);
       toast.success("Job Updated");
       toggleEditing();
       router.refresh();
-    } catch (error) {
+    } catch {
       toast.error("Something went wrong");
     }
     console.log(values);

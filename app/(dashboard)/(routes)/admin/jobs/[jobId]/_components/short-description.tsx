@@ -11,7 +11,6 @@ import {
 
 import { Textarea } from "@/components/ui/textarea";
 
-import getGenerativeAIResponse from "@/scripts/aistudio";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Job } from "@prisma/client";
 import axios from "axios";
@@ -52,11 +51,11 @@ export const ShortDescription = ({
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const response = await axios.patch(`/api/jobs/${jobId}`, values);
+      await axios.patch(`/api/jobs/${jobId}`, values);
       toast.success("Job Updated");
       toggleEditing();
       router.refresh();
-    } catch (error) {
+    } catch {
       toast.error("Something went wrong");
     }
     console.log(values);
@@ -68,11 +67,14 @@ export const ShortDescription = ({
     try {
       setIsPrompting(true);
       const customPrompt = `Could you craft a concise job description for a ${prompt} position in fewer than 400 characters?`;
-      await getGenerativeAIResponse(customPrompt).then((data) => {
-        form.setValue("short_description", data);
 
-        setIsPrompting(false);
+      const response = await axios.post("/api/generate-ai-content", {
+        prompt: customPrompt,
       });
+
+      const data = response.data.data;
+      form.setValue("short_description", data);
+      setIsPrompting(false);
     } catch (error) {
       console.log(error);
       toast.error("Something went wrong");

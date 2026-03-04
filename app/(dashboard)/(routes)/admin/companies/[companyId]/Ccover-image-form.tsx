@@ -11,7 +11,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Company } from "@prisma/client";
 import axios from "axios";
-import { Divide, ImageIcon, Pencil } from "lucide-react";
+import { ImageIcon, Pencil } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -50,11 +50,11 @@ export const CompanyCoverImage = ({
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       console.log(values); // 🔥 Check this
-      const response = await axios.patch(`/api/companies/${companyId}`, values);
+      await axios.patch(`/api/companies/${companyId}`, values);
       toast.success("Logo Updated");
       toggleEditing();
       router.refresh();
-    } catch (error) {
+    } catch {
       toast.error("Something went wrong");
     }
     console.log(values);
@@ -65,7 +65,7 @@ export const CompanyCoverImage = ({
   return (
     <div className="mt-6 border bg-neutral-100 rounded-2xl p-4">
       <div className="font-medium flex items-center justify-between">
-        Company Logo
+        Company Cover Image
         <Button onClick={toggleEditing} variant={"ghost"}>
           {isEditing ? (
             <>Cancel</>

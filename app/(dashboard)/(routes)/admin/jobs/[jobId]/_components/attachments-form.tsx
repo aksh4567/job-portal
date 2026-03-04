@@ -46,9 +46,9 @@ export const AttachmentsForm = ({
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const router = useRouter();
 
-  // Assuming initialData is available and has type of any
+  // Assuming initialData is available and has type of Attachment
   const initialAttachments = Array.isArray(initialData?.attachments)
-    ? initialData.attachments.map((attachment: any) => {
+    ? initialData.attachments.map((attachment: Attachment) => {
         if (
           typeof attachment === "object" &&
           attachment !== null &&
@@ -68,26 +68,19 @@ export const AttachmentsForm = ({
     },
   });
 
-  const { isSubmitting, isValid } = form.formState;
+  const { isSubmitting } = form.formState;
 
-  const onSubmit = async () => {
-    toggleEditing();
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    try {
+      await axios.post(`/api/jobs/${jobId}/attachments`, values);
+      toast.success("Job Attachments updated");
+      toggleEditing();
+      router.refresh();
+    } catch (error) {
+      console.log((error as Error)?.message);
+      toast.error("Something went wrong");
+    }
   };
-  // const onSubmit = async (values: z.infer<typeof formSchema>) => {
-  //   console.log(values);
-  //   try {
-  //     const response = await axios.post(
-  //       `/api/jobs/${jobId}/attachments`,
-  //       values,
-  //     );
-  //     toast.success("Job Attachment updated");
-  //     toggleEditing();
-  //     router.refresh();
-  //   } catch (error) {
-  //     console.log((error as Error)?.message);
-  //     toast.error("Something went wrong");
-  //   }
-  // };
 
   const toggleEditing = () => setIsEditing((current) => !current);
 
@@ -198,29 +191,28 @@ export const AttachmentsForm = ({
 
       {isEditing && (
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-4 mt-4"
-          >
+          <div className="space-y-4 mt-4">
             <FormField
               control={form.control}
               name="attachments"
-              render={({ field: _field }) => (
+              render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <AttachmentsUploads jobId={jobId} disabled={isSubmitting} />
+                    <AttachmentsUploads
+                      value={field.value}
+                      disabled={isSubmitting}
+                      onChange={(attachments) => {
+                        if (attachments) {
+                          onSubmit({ attachments });
+                        }
+                      }}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-
-            <div className="flex items-center gap-x-2">
-              <Button disabled={!isValid || isSubmitting} type="submit">
-                Done
-              </Button>
-            </div>
-          </form>
+          </div>
         </Form>
       )}
     </div>

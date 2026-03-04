@@ -25,12 +25,6 @@ interface HourlyRateProps {
   jobId: string;
 }
 
-const options = [
-  { value: "full-time", label: "Full Time" },
-  { value: "part-time", label: "Part Time" },
-  { value: "contract", label: "Contract" },
-];
-
 const formSchema = z.object({
   hourlyRate: z.string().min(1),
 });
@@ -50,11 +44,11 @@ export const HourlyRateForm = ({ initialData, jobId }: HourlyRateProps) => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const response = await axios.patch(`/api/jobs/${jobId}`, values);
+      await axios.patch(`/api/jobs/${jobId}`, values);
       toast.success("Job Updated");
       toggleEditing();
       router.refresh();
-    } catch (error) {
+    } catch {
       toast.error("Something went wrong");
     }
     console.log(values);

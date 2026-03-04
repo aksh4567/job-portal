@@ -132,7 +132,7 @@ export const SidebarRoutes = () => {
 
   const routes = isAdminPage ? adminRoutes : guestRoutes;
 
-  const handleShiftTiming = (shiftTimings: any[]) => {
+  const handleShiftTiming = (shiftTimings: string[]) => {
     const currentQueryParams = qs.parseUrl(window.location.href).query;
     const updatedQueryParams = {
       ...currentQueryParams,
@@ -152,7 +152,7 @@ export const SidebarRoutes = () => {
     router.push(url);
   };
 
-  const handleWorkingMode = (workingMode: any[]) => {
+  const handleWorkingMode = (workingMode: string[]) => {
     const currentQueryParams = qs.parseUrl(window.location.href).query;
     const updatedQueryParams = {
       ...currentQueryParams,
@@ -173,7 +173,7 @@ export const SidebarRoutes = () => {
     router.push(url);
   };
 
-  const handleExperience = (experience: any[]) => {
+  const handleExperience = (experience: string[]) => {
     const currentQueryParams = qs.parseUrl(window.location.href).query;
     const updatedQueryParams = {
       ...currentQueryParams,

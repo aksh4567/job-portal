@@ -13,7 +13,6 @@ import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UserProfile } from "@prisma/client";
 import axios from "axios";
-import { initial } from "lodash";
 import { Pencil, UserCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -45,11 +44,11 @@ export const NameForm = ({ initialData, userId }: NameFormProps) => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const response = await axios.patch(`/api/users/${userId}`, values);
+      await axios.patch(`/api/users/${userId}`, values);
       toast.success("Profile Updated");
       toggleEditing();
       router.refresh();
-    } catch (error) {
+    } catch {
       toast.error("Something went wrong");
     }
     console.log(values);

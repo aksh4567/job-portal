@@ -3,7 +3,7 @@
 import SearchContainer from "@/components/search-container";
 import { Button } from "@/components/ui/button";
 import { UserButton } from "@clerk/nextjs";
-import { LogOut, Search } from "lucide-react";
+import { LogOut } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 

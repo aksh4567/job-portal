@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/form";
 
 import { cn } from "@/lib/utils";
-import getGenerativeAIResponse from "@/scripts/aistudio";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Job } from "@prisma/client";
 import axios from "axios";
@@ -54,12 +53,12 @@ export const Description = ({ initialData, jobId }: DescriptionProps) => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const response = await axios.patch(`/api/jobs/${jobId}`, values);
+      await axios.patch(`/api/jobs/${jobId}`, values);
       toast.success("Job Updated");
       // setLocalDescription(values.description);
       toggleEditing();
       router.refresh();
-    } catch (error) {
+    } catch {
       toast.error("Something went wrong");
     }
     console.log(values);
@@ -79,25 +78,26 @@ export const Description = ({ initialData, jobId }: DescriptionProps) => {
 - Return ONLY the plain text content of the job description.
 - Use simple, clean headers without Markdown symbols.
       `;
-      await getGenerativeAIResponse(customPrompt).then((data) => {
-        // data = data.replace(/^["']|["']$/g, "");
-        // let cleanedText = data.replace(/\*\*/g, "");
-
-        // 1. Remove quotes from start/end
-        let cleanedText = data.replace(/^["']|["']$/g, "");
-
-        // 2. Remove Markdown bold (**) and headers (#)
-        cleanedText = cleanedText.replace(/[*#]/g, "");
-
-        // 3. Remove horizontal rules (---)
-        cleanedText = cleanedText.replace(/^-+$/gm, "");
-
-        // 4. Trim whitespace from start/end to remove extra lines
-        cleanedText = cleanedText.trim();
-
-        setAiValue(cleanedText);
-        setIsPrompting(false);
+      const response = await axios.post("/api/generate-ai-content", {
+        prompt: customPrompt,
       });
+      
+      const data = response.data.data;
+      
+      // 1. Remove quotes from start/end
+      let cleanedText = data.replace(/^["']|["']$/g, "");
+
+      // 2. Remove Markdown bold (**) and headers (#)
+      cleanedText = cleanedText.replace(/[*#]/g, "");
+
+      // 3. Remove horizontal rules (---)
+      cleanedText = cleanedText.replace(/^-+$/gm, "");
+
+      // 4. Trim whitespace from start/end to remove extra lines
+      cleanedText = cleanedText.trim();
+
+      setAiValue(cleanedText);
+      setIsPrompting(false);
     } catch (error) {
       console.log(error);
       toast.error("Something went wrong");

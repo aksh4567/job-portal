@@ -1,6 +1,7 @@
 import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 import { Job } from "@prisma/client";
+import { has } from "lodash";
 
 type GetJobs = {
   title?: string;
@@ -126,6 +127,12 @@ export const getJobs = async ({
     if (formattedYearsOfExperience && formattedYearsOfExperience.length > 0) {
       query.where.yearsOfExperience = {
         in: formattedYearsOfExperience,
+      };
+    }
+
+    if (savedJobs) {
+      query.where.savedUsers = {
+        has: userId,
       };
     }
 

@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@base-ui/react": "^1.1.0",
@@ -19,6 +20,7 @@
     "@radix-ui/react-slot": "^1.2.3",
     "@tanstack/react-table": "^8.21.3",
     "@types/lodash": "^4.17.23",
+    "@types/nodemailer": "^7.0.11",
     "axios": "^1.13.1",
     "class-variance-authority": "^0.7.1",
     "cloudinary": "^2.9.0",
@@ -26,9 +28,11 @@
     "cmdk": "^1.1.1",
     "date-fns": "^4.1.0",
     "framer-motion": "^12.34.3",
+    "handlebars": "^4.7.8",
     "lodash": "^4.17.23",
     "lucide-react": "^0.545.0",
     "next": "15.5.4",
+    "nodemailer": "^8.0.1",
     "prisma": "^6.18.0",
     "query-string": "^9.3.1",
     "radix-ui": "^1.4.3",
@@ -37,6 +41,7 @@
     "react-hook-form": "^7.65.0",
     "react-hot-toast": "^2.6.0",
     "react-quill-new": "^3.8.3",
+    "recharts": "^3.7.0",
     "tailwind-merge": "^3.3.1",
     "zod": "^4.1.12"
   },

@@ -1,7 +1,7 @@
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
-import { AlertTriangle, CheckCircle, Variable } from "lucide-react";
+import { AlertTriangle, CheckCircle } from "lucide-react";
 
 const bannerVariants = cva(
   "border text-center p-4 text-sm flex items-center w-full rounded-md shadow-md",
@@ -15,7 +15,7 @@ const bannerVariants = cva(
     defaultVariants: {
       variant: "warning",
     },
-  }
+  },
 );
 
 const iconMap = {

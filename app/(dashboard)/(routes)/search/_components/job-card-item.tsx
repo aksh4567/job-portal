@@ -13,6 +13,7 @@ import {
   Loader2,
   Network,
   ReceiptIndianRupeeIcon,
+  Building2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn, formattedString } from "@/lib/utils";
@@ -37,6 +38,7 @@ const JobCardItem = ({ job, userId }: JobCardItemProps) => {
 
   const company = typeJob.company;
   const [isBookmarkLoading, setIsBookmarkLoading] = useState(false);
+  const [imageError, setImageError] = useState(false);
   const isSavedByUser = userId && job.savedUsers?.includes(userId);
   const SavedUsersIcon = isSavedByUser ? BookmarkCheck : Bookmark;
 
@@ -122,15 +124,18 @@ const JobCardItem = ({ job, userId }: JobCardItemProps) => {
 
           {/* company details */}
           <Box className="items-center justify-start gap-x-4">
-            <div className="w-12 h-12 min-w-12 min-h-12 border p-2 rounded-md relative flex items-center justify-center overflow-hidden">
-              {company?.logo && (
+            <div className="w-12 h-12 min-w-12 min-h-12 border p-2 rounded-md relative flex items-center justify-center overflow-hidden bg-neutral-100">
+              {company?.logo && !imageError ? (
                 <Image
-                  alt={company?.name}
-                  src={company?.logo}
+                  alt={company?.name || "Company logo"}
+                  src={company.logo}
                   width={40}
                   height={40}
                   className="object-contain"
+                  onError={() => setImageError(true)}
                 />
+              ) : (
+                <Building2 className="w-6 h-6 text-neutral-400" />
               )}
             </div>
 
@@ -139,7 +144,7 @@ const JobCardItem = ({ job, userId }: JobCardItemProps) => {
                 {job.title}
               </p>
               <Link
-                href={`/company/${company?.id}`}
+                href={`/companies/${company?.id}`}
                 className="text-xs text-purple-500 w-full truncate"
               >
                 {company?.name}

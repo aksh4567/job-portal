@@ -2,9 +2,12 @@ import { getJobs } from "@/actions/get-jobs";
 import SearchContainer from "@/components/search-container";
 import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
+import { Suspense } from "react";
 import CategoriesList from "./_components/categories-list";
 import { PageContent } from "./_components/page-content";
 import { AppliedFilters } from "./_components/applied-filters";
+
+export const dynamic = "force-dynamic";
 
 interface SearchProps {
   searchParams: Promise<{
@@ -29,20 +32,26 @@ const SearchPage = async ({ searchParams }: SearchProps) => {
   const { userId } = await auth();
 
   const jobs = await getJobs({ ...searchParamsData });
-  console.log(`JObs Count : ${jobs.length}`);
+  // console.log(`JObs Count : ${jobs.length}`);
 
   return (
     <>
       <div className="px-6 pt-6 block md:hidden md:mb-0">
-        <SearchContainer />
+        <Suspense fallback={<div>Loading search...</div>}>
+          <SearchContainer />
+        </Suspense>
       </div>
 
       <div className="p-6">
         {/* cattegories */}
-        <CategoriesList categories={categories} />
+        <Suspense fallback={<div>Loading categories...</div>}>
+          <CategoriesList categories={categories} />
+        </Suspense>
 
         {/* applied filters */}
-        <AppliedFilters categories={categories} />
+        <Suspense fallback={<div>Loading filters...</div>}>
+          <AppliedFilters categories={categories} />
+        </Suspense>
 
         {/* page content */}
         <PageContent jobs={jobs} userId={userId} />

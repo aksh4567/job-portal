@@ -12,10 +12,21 @@ const nextConfig: NextConfig = {
     ],
   },
 
-  eslint: {
-    // Warning: This allows production builds to successfully complete even if
-    // your project has ESLint errors.
-    ignoreDuringBuilds: true,
+  // eslint: {
+  //   // Warning: This allows production builds to successfully complete even if
+  //   // your project has ESLint errors.
+  //   ignoreDuringBuilds: true,
+  // },
+
+  // experimental: {
+  //   optimizePackageImports: ["lucide-react"],
+  // },
+
+  webpack: (config, { isServer }) => {
+    if (isServer) {
+      config.externals.push("handlebars");
+    }
+    return config;
   },
 };
 

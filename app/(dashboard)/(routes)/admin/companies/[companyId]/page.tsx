@@ -1,7 +1,7 @@
 import { IconBadge } from "@/components/icon-badge";
 import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
-import { ArrowLeft, LayoutDashboard, ListCheck, Network } from "lucide-react";
+import { ArrowLeft, LayoutDashboard, Network } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import React from "react";
@@ -40,12 +40,6 @@ const CompanyEditPage = async ({
     },
   });
 
-  const categories = await db.category.findMany({
-    orderBy: {
-      name: "asc",
-    },
-  });
-
   if (!company) {
     return redirect("/admin/companies");
   }
@@ -68,9 +62,6 @@ const CompanyEditPage = async ({
   const totalFields = requiredFields.length;
   const completedFields = requiredFields.filter(Boolean).length;
   const completionText = `(${completedFields}/${totalFields})`;
-
-  const isComplete = requiredFields.every(Boolean);
-  //if every field is complete only then this boolean will return true
 
   return (
     <div className="p-6">

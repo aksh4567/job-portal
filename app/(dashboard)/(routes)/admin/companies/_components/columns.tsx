@@ -8,7 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ArrowUpDown, Eye, MoreHorizontal, Pencil } from "lucide-react";
+import { ArrowUpDown, Building2, MoreHorizontal, Pencil } from "lucide-react";
 
 import Link from "next/link";
 import Image from "next/image";
@@ -26,13 +26,27 @@ export const columns: ColumnDef<CompanyColumns>[] = [
     cell: ({ row }) => {
       const { logo } = row.original;
       return (
-        <div className="w-20 h-20 flex items-center justify-center relative rounded-md overflow-hidden">
-          <Image
-            src={logo}
-            alt="Logo"
-            fill
-            className="h-full w-full object-contain"
-          />
+        <div className="w-20 h-20 flex items-center justify-center relative rounded-md overflow-hidden bg-neutral-100">
+          {logo ? (
+            <Image
+              src={logo}
+              alt="Logo"
+              sizes="80px"
+              fill
+              className="h-full w-full object-contain"
+              // onError={(e) => {
+              //   const target = e.currentTarget;
+              //   target.style.display = "none";
+              //   const parent = target.parentElement;
+              //   if (parent) {
+              //     parent.innerHTML =
+              //       '<svg class="w-10 h-10 text-neutral-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>';
+              //   }
+              // }}
+            />
+          ) : (
+            <Building2 className="w-10 h-10 text-neutral-400" />
+          )}
         </div>
       );
     },

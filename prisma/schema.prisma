@@ -106,6 +106,7 @@ model Resumes {
   id            String      @id @default(auto()) @map("_id") @db.ObjectId
   name          String
   url           String
+  publicId      String
   userProfileId String
   userProfile   UserProfile @relation(fields: [userProfileId], references: [userId], onDelete: Cascade)
   createdAt     DateTime    @default(now())
