@@ -18,18 +18,18 @@ const menuOne = [
 
 export const Footer = () => {
   return (
-    <Box className="h-73 p-4 items-start flex-col bg-purple-50 rounded-xl shadow-lg">
-      <div className="w-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-6">
+    <Box className="h-auto p-4 sm:p-6 md:p-8 items-start flex-col bg-purple-50 rounded-xl shadow-lg">
+      <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 md:gap-8">
         {/* first section */}
-        <Box className="flex-col items-start gap-6">
+        <Box className="flex-col items-start gap-4 sm:gap-6 sm:col-span-2 lg:col-span-1">
           <div className="flex items-center gap-1">
             <Logo />
-            <h2 className="text-xl font-semibold text-muted-foreground">
-              WorkNow
+            <h2 className="text-lg sm:text-xl font-semibold text-muted-foreground">
+              Ikigai<span className="text-purple-700">Nest</span>
             </h2>
           </div>
-          <p className="font-semibold text-base">Connect with us</p>
-          <div className="flex items-center gap-6 w-full">
+          <p className="font-semibold text-sm sm:text-base">Connect with us</p>
+          <div className="flex items-center gap-4 sm:gap-6 w-full">
             <Link href={"www.facebook.com"}>
               <Facebook className="w-5 h-5 text-muted-foreground hover:text-purple-500 hover:scale-125 transition-all" />
             </Link>
@@ -50,26 +50,26 @@ export const Footer = () => {
 
         {/* second */}
 
-        <Box className="flex-col items-start justify-between gap-y-4 ml-4">
+        <Box className="flex-col items-start justify-start sm:justify-between gap-y-3 sm:gap-y-4">
           {menuOne.map((item) => (
             <Link key={item.label} href={item.href}>
-              <p className="text-sm font-sans text-neutral-500 hover:text-purple-500">
+              <p className="text-sm font-sans text-neutral-500 hover:text-purple-500 transition-colors">
                 {item.label}
               </p>
             </Link>
           ))}
         </Box>
 
-        <Box className="flex-col items-start justify-between gap-y-4 ml-4">
+        {/* <Box className="flex-col items-start justify-start sm:justify-between gap-y-3 sm:gap-y-4">
           {menuOne.map((item) => (
             <Link key={item.label} href={item.href}>
-              <p className="text-sm font-sans text-neutral-500 hover:text-purple-500">
+              <p className="text-sm font-sans text-neutral-500 hover:text-purple-500 transition-colors">
                 {item.label}
               </p>
             </Link>
           ))}
-        </Box>
-        <Card className="col-span-2 relative min-h-[220px] overflow-hidden">
+        </Box> */}
+        <Card className="sm:col-span-2 lg:col-span-1 xl:col-span-2 relative min-h-[200px] sm:min-h-[220px] md:min-h-[240px] overflow-hidden">
           <Image
             src="/home-cover-img.png"
             fill
@@ -90,8 +90,8 @@ export const Footer = () => {
         </Card> */}
       </div>
 
-      <Separator className="mt-3" />
-      <Box className="w-full justify-center p-4 text-sm text-muted-foreground">
+      <Separator className="mt-4 md:mt-6" />
+      <Box className="w-full justify-center p-3 sm:p-4 text-xs sm:text-sm text-muted-foreground">
         All rights reserved &copy; 2024
       </Box>
     </Box>
