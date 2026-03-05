@@ -15,6 +15,7 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { Banner } from "@/components/banner";
+import { Separator } from "@/components/ui/separator";
 
 interface JobDetailsPageContentProps {
   job: Job & { company: Company | null; attachments: Attachment[] };
@@ -156,6 +157,7 @@ export const JobDetailsPageContent = ({
           )}
         </div>
       </Box>
+      <Separator className="mt-3" />
 
       {/* Description */}
       <Box className="flex-col my-4 items-start justify-start px-4 gap-2">

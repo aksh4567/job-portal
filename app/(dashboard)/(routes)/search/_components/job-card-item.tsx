@@ -220,7 +220,7 @@ const JobCardItem = ({ job, userId }: JobCardItemProps) => {
               variant="outline"
               onClick={onClickSaveJob}
             >
-              {isSavedByUser ? "Saved" : "Saved For Later"}
+              {isSavedByUser ? "Saved" : "Save For Later"}
             </Button>
           </Box>
         </div>

@@ -135,19 +135,20 @@ const ProfilePage = async () => {
           Followed Companies
         </h2>
 
-        <div className="mt-6 w-full grid grid-cols-1 md:grid-cols-3 2xl:grid-cols-6 gap-2">
+        <div className="mt-6 w-full grid grid-cols-1 md:grid-cols-3 2xl:grid-cols-4 gap-2">
           {followedCompanies.length === 0 ? (
             <p>No Companies followed yet</p>
           ) : (
             <React.Fragment>
               {followedCompanies.map((com) => (
                 <Card className="p-3 space-y-2 relative" key={com.id}>
-                  <div className="w-full flex items-center justify-end"></div>
-                  <Link href={`/companies/${com.id}`}>
-                    <Button variant={"ghost"} size={"icon"}>
-                      <Eye className="w-4 h-4" />
-                    </Button>
-                  </Link>
+                  <div className="w-full flex items-center justify-end">
+                    <Link href={`/companies/${com.id}`}>
+                      <Button variant={"ghost"} size={"icon"}>
+                        <Eye className="w-4 h-4" />
+                      </Button>
+                    </Link>
+                  </div>
 
                   {com.logo && (
                     <div className="w-full h-24 flex items-center justify-center relative overflow-hidden">
