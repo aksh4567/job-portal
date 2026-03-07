@@ -18,6 +18,8 @@ import { z } from "zod";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { useRef } from "react";
+
 const formSchema = z.object({
   name: z.string().min(1, { message: "Company Title cannot be empty" }),
 });
@@ -31,8 +33,16 @@ const CompanyCreatePage = () => {
 
   const { isSubmitting, isValid } = form.formState;
   const router = useRouter();
+  const isSubmittingRef = useRef(false);
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    // Prevent duplicate submissions
+    if (isSubmittingRef.current) {
+      return;
+    }
+
+    isSubmittingRef.current = true;
+
     try {
       const response = await axios.post("/api/companies", values);
       router.push(`/admin/companies/${response.data.id}`);
@@ -40,6 +50,7 @@ const CompanyCreatePage = () => {
     } catch (error) {
       console.log((error as Error)?.message);
       toast.error((error as Error)?.message);
+      isSubmittingRef.current = false; // Reset on error
     }
   };
 

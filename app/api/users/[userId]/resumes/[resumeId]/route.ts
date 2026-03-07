@@ -22,8 +22,34 @@ export const DELETE = async (
       return new NextResponse("Attachment not found", { status: 404 });
     }
 
-    // delete from cloudinary
-    await cloudinary.uploader.destroy(resume.publicId);
+    // Extract resource type from URL
+    // URL format: https://res.cloudinary.com/{cloud}/{resource_type}/upload/...
+    const urlParts = resume.url.split("/");
+    const uploadIndex = urlParts.indexOf("upload");
+    let resourceType = "raw"; // default
+    if (uploadIndex > 0) {
+      const typeFromUrl = urlParts[uploadIndex - 1];
+      if (["image", "video", "raw"].includes(typeFromUrl)) {
+        resourceType = typeFromUrl;
+      }
+    }
+
+    // For images, remove extension from publicId before deleting
+    // For raw files, keep the extension
+    let publicIdToDelete = resume.publicId;
+    if (resourceType === "image") {
+      publicIdToDelete = resume.publicId.split(".")[0];
+    }
+
+    // Delete from cloudinary with correct resource_type
+    try {
+      await cloudinary.uploader.destroy(publicIdToDelete, {
+        resource_type: resourceType,
+      });
+    } catch (cloudinaryError) {
+      console.error("[CLOUDINARY_DELETE_ERROR]", cloudinaryError);
+      // Continue with DB deletion even if Cloudinary deletion fails
+    }
 
     // delete from db
     await db.resumes.delete({

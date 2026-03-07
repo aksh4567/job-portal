@@ -32,7 +32,7 @@ export const HomesearchContainer = () => {
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="flex-1 text-lg font-sans bg-transparent outline-none border-none min-w-72"
+          className="flex-1 font-sans bg-transparent outline-none border-none shadow-none min-w-72"
         />
         <Button
           onClick={handleClick}

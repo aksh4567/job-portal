@@ -46,11 +46,19 @@ export const POST = async (
       }
 
       // Extract publicId from Cloudinary URL
+      // Example URL: https://res.cloudinary.com/cloud/raw/upload/v123/folder/file.pdf
       const urlParts = url.split("/");
-      const publicIdWithExt = urlParts
-        .slice(urlParts.indexOf("upload") + 1)
-        .join("/");
-      const publicId = publicIdWithExt.split(".")[0];
+      const uploadIndex = urlParts.indexOf("upload");
+
+      // Extract publicId (everything after upload/)
+      let publicIdWithExt = urlParts.slice(uploadIndex + 1).join("/");
+
+      // Remove version parameter (e.g., v1234567890/)
+      publicIdWithExt = publicIdWithExt.replace(/^v\d+\//, "");
+
+      // Keep the full publicId WITH extension for all files
+      // Cloudinary needs the extension for raw files (PDFs, docs, etc.)
+      const publicId = publicIdWithExt;
 
       const newAttachment = await db.attachment.create({
         data: {

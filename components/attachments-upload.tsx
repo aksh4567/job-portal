@@ -56,6 +56,10 @@ export const AttachmentsUploads = ({
           process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET!,
         );
 
+        // Determine resource type based on file type
+        const isImage = file.type.startsWith("image/");
+        const resourceType = isImage ? "image" : "raw";
+
         const xhr = new XMLHttpRequest();
 
         xhr.upload.addEventListener("progress", (e) => {
@@ -92,9 +96,10 @@ export const AttachmentsUploads = ({
             reject(new Error("Upload failed"));
           });
 
+          // Use the correct resource type endpoint
           xhr.open(
             "POST",
-            `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/auto/upload`,
+            `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/${resourceType}/upload`,
           );
           xhr.send(formData);
         });
