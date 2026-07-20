@@ -1,24 +1,32 @@
 FROM node:20-alpine AS base
 
+# Dependencies
 FROM base AS deps
 WORKDIR /app
 
 COPY package.json package-lock.json ./
-ARG DATABASE_URL="mongodb://localhost:27017/job-portal"
+COPY prisma ./prisma
+
+ARG DATABASE_URL
 ENV DATABASE_URL=${DATABASE_URL}
 RUN npm ci
 
+# Build
 FROM base AS builder
 WORKDIR /app
-
-ARG DATABASE_URL="mongodb://localhost:27017/job-portal"
-ENV DATABASE_URL=${DATABASE_URL}
 
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
+ARG DATABASE_URL
+ENV DATABASE_URL=$DATABASE_URL
+
+ARG NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+ENV NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=$NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+
 RUN npm run build
 
+# Production
 FROM base AS runner
 WORKDIR /app
 
@@ -37,4 +45,4 @@ USER nextjs
 
 EXPOSE 3000
 
-CMD ["npm", "run", "start"]
+CMD ["npm", "start"]

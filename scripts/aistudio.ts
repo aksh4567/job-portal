@@ -54,13 +54,6 @@
 
 import { GoogleGenAI, HarmCategory, HarmBlockThreshold } from "@google/genai";
 
-const apiKey = process.env.GEMINI_API_KEY;
-
-if (!apiKey) {
-  throw new Error("GEMINI_API_KEY is not set in environment variables");
-}
-
-const genAI = new GoogleGenAI({ apiKey });
 const generationConfig = {
   temperature: 1,
   topP: 0.95,
@@ -69,6 +62,13 @@ const generationConfig = {
 };
 
 async function getGenerativeAIResponse(prompt: string) {
+  const apiKey = process.env.GEMINI_API_KEY;
+
+  if (!apiKey) {
+    throw new Error("GEMINI_API_KEY is not set in environment variables");
+  }
+
+  const genAI = new GoogleGenAI({ apiKey });
   const safetySettings = [
     {
       category: HarmCategory.HARM_CATEGORY_HARASSMENT,
@@ -98,8 +98,6 @@ async function getGenerativeAIResponse(prompt: string) {
   });
 
   const text = response.text;
-
-  //console.log(text);
 
   return text?.trim().replace(/```/g, "") || "";
 }

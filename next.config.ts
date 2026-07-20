@@ -1,26 +1,19 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  output: "standalone",
+
   images: {
     remotePatterns: [
       {
         protocol: "https",
         hostname: "res.cloudinary.com",
       },
-      { hostname: "img.clerk.com" },
+      {
+        hostname: "img.clerk.com",
+      },
     ],
   },
-
-  // eslint: {
-  //   // Warning: This allows production builds to successfully complete even if
-  //   // your project has ESLint errors.
-  //   ignoreDuringBuilds: true,
-  // },
-
-  // experimental: {
-  //   optimizePackageImports: ["lucide-react"],
-  // },
 
   webpack: (config, { isServer }) => {
     if (isServer) {
@@ -31,3 +24,13 @@ const nextConfig: NextConfig = {
 };
 
 export default nextConfig;
+
+// eslint: {
+//   // Warning: This allows production builds to successfully complete even if
+//   // your project has ESLint errors.
+//   ignoreDuringBuilds: true,
+// },
+
+// experimental: {
+//   optimizePackageImports: ["lucide-react"],
+// },
