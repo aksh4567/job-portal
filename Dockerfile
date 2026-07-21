@@ -24,11 +24,6 @@ ENV DATABASE_URL=$DATABASE_URL
 ARG NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
 ENV NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=$NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
 
-RUN if [ -z "$NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY" ]; then \
-    echo "❌ KEY MISSING"; \
-else \
-    echo "✅ KEY FOUND"; \
-fi   
 RUN npm run build
 
 # Production
@@ -38,8 +33,9 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=3000
 
-RUN addgroup -g 1001 -S nodejs && adduser -S nextjs -u 1001
-
+RUN addgroup -S nodejs -g 1001 && \
+    adduser -S nextjs -u 1001 -G nodejs
+    
 # COPY --from=builder /app/public ./public
 # COPY --from=builder /app/.next ./.next
 # COPY --from=builder /app/package.json ./package.json
@@ -57,4 +53,4 @@ USER nextjs
 
 EXPOSE 3000
 
-CMD ["npm", "start"] 
+CMD ["node", "server.js"] 
