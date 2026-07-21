@@ -4,7 +4,7 @@ import Logo from "@/app/(dashboard)/_components/logo";
 import Box from "./box";
 import { Facebook, Linkedin, Twitter, Youtube } from "lucide-react";
 import Link from "next/link";
-import { Card, CardDescription, CardTitle } from "./ui/card";
+import { Card } from "./ui/card";
 import Image from "next/image";
 import { Separator } from "./ui/separator";
 
@@ -20,7 +20,7 @@ export const Footer = () => {
   return (
     <Box className="h-auto p-4 sm:p-6 md:p-8 items-start flex-col bg-purple-50 rounded-xl shadow-lg">
       <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 md:gap-8">
-        {/* first section */}
+        {/* first */}
         <Box className="flex-col items-start gap-4 sm:gap-6 sm:col-span-2 lg:col-span-1">
           <div className="flex items-center gap-1">
             <Logo />
@@ -92,7 +92,7 @@ export const Footer = () => {
 
       <Separator className="mt-4 md:mt-6" />
       <Box className="w-full justify-center p-3 sm:p-4 text-xs sm:text-sm text-muted-foreground">
-        All rights reserved &copy; 2024
+        All rights reserved &copy; 2025
       </Box>
     </Box>
   );
